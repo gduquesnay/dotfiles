@@ -47,6 +47,7 @@ Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'michaeljsmith/vim-indent-object'
 Bundle 'rking/ag.vim'
 Bundle 'ecomba/vim-ruby-refactoring'
+Bundle 'digitaltoad/vim-pug'
 
 " *********************************************
 " *                 Settings                  *
@@ -284,6 +285,7 @@ nnoremap <F1> :call ToggleFocusMode()<cr>
 "# ctrlp.vim
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*   " for Linux/MacOSX
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
+let g:ctrlp_dont_split = 'NERD_tree_2'
 
 " vim-gitgutter
 highlight clear SignColumn
