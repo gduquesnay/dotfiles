@@ -48,6 +48,9 @@ Bundle 'michaeljsmith/vim-indent-object'
 Bundle 'rking/ag.vim'
 Bundle 'ecomba/vim-ruby-refactoring'
 Bundle 'digitaltoad/vim-pug'
+Bundle 'terryma/vim-multiple-cursors'
+Bundle 'easymotion/vim-easymotion'
+
 
 " *********************************************
 " *                 Settings                  *
@@ -105,6 +108,7 @@ set nobackup                      " Don't make a backup before overwriting a fil
 set nowritebackup                 " And again.
 set directory=/tmp                " Keep swap files in one location
 set timeoutlen=500
+set ttimeoutlen=0
 
 set laststatus=2                  " Show the status line all the time
 set statusline=[%n]\ %<%.99f\ %h%w%m%r%y\ %{exists('*CapsLockStatusline')?CapsLockStatusline():''}%=%-16(\ %l,%c-%v\ %)%P
@@ -278,6 +282,10 @@ imap <buffer> <F4> <Plug>(xmpfilter-mark)
 
 nnoremap <F1> :call ToggleFocusMode()<cr>
 
+" Visually select recently pasted text
+nnoremap gp `[v`]
+nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
+
 " *********************************************
 " *           Plugin Customization            *
 " *********************************************
@@ -285,12 +293,46 @@ nnoremap <F1> :call ToggleFocusMode()<cr>
 "# ctrlp.vim
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*   " for Linux/MacOSX
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
-let g:ctrlp_dont_split = 'NERD_tree_2'
+
+"https://vi.stackexchange.com/questions/10016/stop-ctrlp-from-opening-in-nerdtree
+function! CtrlPCommand()
+    let c = 0
+    let wincount = winnr('$')
+    " Don't open it here if current buffer is not writable (e.g. NERDTree)
+    while !empty(getbufvar(+expand("<abuf>"), "&buftype")) && c < wincount
+        exec 'wincmd w'
+        let c = c + 1
+    endwhile
+    exec 'CtrlP'
+endfunction
+let g:ctrlp_cmd = 'call CtrlPCommand()'
+let g:ctrlp_dont_split = 'nerdtree'
+
+
 
 " vim-gitgutter
 highlight clear SignColumn
 let g:gitgutter_realtime = 0
 let g:gitgutter_eager = 0
+
+" vim-easymotion
+" <Leader>f{char} to move to {char}
+map  <Leader>f <Plug>(easymotion-bd-f)
+nmap <Leader>f <Plug>(easymotion-overwin-f)
+" s{char}{char} to move to {char}{char}
+nmap s <Plug>(easymotion-overwin-f2)
+" Move to line
+map <Leader>L <Plug>(easymotion-bd-jk)
+nmap <Leader>L <Plug>(easymotion-overwin-line)
+" Move to word
+map  <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+" use ljkh 
+map <Leader>l <Plug>(easymotion-lineforward)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+map <Leader>h <Plug>(easymotion-linebackward)
+
 
 " *********************************************
 " *        Local Vimrc Customization          *
